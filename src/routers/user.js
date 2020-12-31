@@ -1,8 +1,10 @@
 const express = require('express')
 const router = new express.Router()
+const multer = require('multer')
 const User = require('../models/user')
 const ObjectID = require('mongodb').ObjectID
 const auth = require('../middleware/auth')
+
 
 router.post('/users', async (req,res) => {
   const user = new User(req.body)
@@ -135,6 +137,25 @@ router.patch('/users/me', auth, async (req,res) =>{
     res.status(500).send()
   }
   
+})
+
+const upload = multer({
+  dest:'avatars',
+  limits: {
+    fileSize: 1000000
+  },
+  fileFilter(req, file, callback) {
+    if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return callback(new Error('File must be a image'))
+    }
+    callback(undefined, true)
+  }
+})
+
+router.post('/users/me/avatar',upload.single('avatar'), (req, res) =>{
+  res.send()
+}, (error,req,res,next) =>{
+  res.status(400).send({error: error.message})
 })
 
 module.exports = router
