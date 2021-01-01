@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
-
-mongoose.connect('mongodb://127.0.0.1:27017/tast-manager-api', {
+const connectionURL = process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017'
+mongoose.connect(`${connectionURL}/tast-manager-api`, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
